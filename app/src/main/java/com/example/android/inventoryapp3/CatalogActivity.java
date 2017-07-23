@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.android.inventoryapp3.data.ItemContract;
@@ -94,7 +95,7 @@ public class CatalogActivity extends AppCompatActivity implements
         ContentValues values = new ContentValues();
         values.put(ItemContract.ItemEntry.COLUMN_ITEM_NAME, "Toto");
         values.put(ItemContract.ItemEntry.COLUMN_ITEM_PRICE , 20);
-        values.put(ItemContract.ItemEntry.COLUMN_ITEM_QUANTITY,10);
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_QUANTITY, 10);
         values.put(ItemContract.ItemEntry.COLUMN_ITEM_BRAND, "track");
 
         // Insert a new row for Toto into the provider using the ContentResolver.
@@ -143,7 +144,9 @@ public class CatalogActivity extends AppCompatActivity implements
                 ItemContract.ItemEntry._ID,
                 ItemContract.ItemEntry.COLUMN_ITEM_NAME,
                 ItemContract.ItemEntry.COLUMN_ITEM_BRAND,
-                ItemContract.ItemEntry.COLUMN_ITEM_PRICE };
+                ItemContract.ItemEntry.COLUMN_ITEM_PRICE,
+                ItemContract.ItemEntry.COLUMN_ITEM_QUANTITY,
+                ItemContract.ItemEntry.COLUMN_ITEM_IMAGE};
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context

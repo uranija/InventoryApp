@@ -142,41 +142,59 @@ public class EditorActivity extends AppCompatActivity implements
         mQuantityEditText.setOnTouchListener(mTouchListener);
         mImageView.setOnTouchListener(mTouchListener);
 
-    }
 
         mImageView.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, 1);
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, 1);
+                }
             }
-        }
-    });
-        mPlusButton.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int quantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
-            quantity++;
-            mQuantityEditText.setText(Integer.toString(quantity));
-        }
-    });
+        });
 
-        mMinusButton.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int quantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
-            if (quantity == 0) {
-                Toast.makeText(getApplicationContext(), getString(R.string.detail_quantity_negative),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                quantity = quantity - 1;
+        mPlusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int quantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
+                quantity++;
                 mQuantityEditText.setText(Integer.toString(quantity));
             }
-        }
-    });
+        });
 
-}
+        mMinusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int quantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
+
+                if (quantity > 1) {
+                    quantity = quantity - 1;
+                }
+
+                mQuantityEditText.setText(Integer.toString(quantity));
+            }
+        });
+
+        mOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String message = "Order request: order more items of" +
+                        "\n" + mNameEditText + " - " + mBrandEditText;
+
+                //Send intent
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Order request");
+                intent.putExtra(Intent.EXTRA_TEXT, message);
+
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+            }
+        });
+
+        mQuantityEditText.setText("1");
+    }
 
     /**
      * Setup the dropdown spinner that allows the user to select the gender of the pet.
@@ -425,13 +443,16 @@ public class EditorActivity extends AppCompatActivity implements
             int quantity = cursor.getInt(quantityColumnIndex);
             int price = cursor.getInt(priceColumnIndex);
 
-            // Update the views on the screen with the values from the database
-            Bitmap itemsBitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
-            mImageView.setImageBitmap(itemsBitmap);
+            if (image != null && image.length > 0) {
+                // Update the views on the screen with the values from the database
+                Bitmap itemsBitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+                mImageView.setImageBitmap(itemsBitmap);
+            }
+
             mNameEditText.setText(name);
             mBrandEditText.setText(breed);
             mPriceEditText.setText(Integer.toString(price));
-            mPriceEditText.setText(Integer.toString(quantity));
+            mQuantityEditText.setText(Integer.toString(quantity));
 
 
         }
