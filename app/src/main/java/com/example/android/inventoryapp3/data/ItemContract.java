@@ -11,7 +11,8 @@ public final class ItemContract {
 
     // To prevent someone from accidentally instantiating the contract class,
     // give it an empty constructor.
-    private ItemContract() {}
+    private ItemContract() {
+    }
 
     /**
      * The "Content authority" is a name for the entire content provider, similar to the
@@ -78,26 +79,32 @@ public final class ItemContract {
         public final static String COLUMN_ITEM_NAME = "name";
 
         /**
-         * Breed of the Item.
+         * Price of the Item.
          * <p>
-         * Type: TEXT
+         * Type: INTEGER
          */
         public final static String COLUMN_ITEM_PRICE = "price";
 
-
+        /**
+         * Quantity of the Item.
+         * <p>
+         * Type: INTEGER
+         */
         public final static String COLUMN_ITEM_QUANTITY = "quantity";
 
         /**
          * Weight of the Item.
          * <p>
-         * Type: INTEGER
+         * Type: TEXT
          */
         public final static String COLUMN_ITEM_BRAND = "brand";
 
-
+        /**
+         * Weight of the Item.
+         * <p>
+         * Type: IMAGE
+         */
         public final static String COLUMN_ITEM_IMAGE = "image";
 
-
     }
-
 }

@@ -92,7 +92,7 @@ public class ItemCursorAdapter extends CursorAdapter {
         final String ItemPrice = cursor.getString(priceColumnIndex);
         final int ItemQuantity = cursor.getInt(quantityColumnIndex);
         byte[] image = cursor.getBlob(imageColumnIndex);
-
+        final int rowID = cursor.getInt(idColumnIndex);
         if (image != null && image.length > 0) {
             Bitmap itemsBitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
             mImageView.setImageBitmap(itemsBitmap);
@@ -101,8 +101,8 @@ public class ItemCursorAdapter extends CursorAdapter {
         // Update the TextViews with the attributes for the current Item
         nameTextView.setText(ItemName);
         brandTextView.setText(ItemBrand);
-        priceTextView.setText(ItemPrice);
-        quantityTextView.setText(Integer.toString(ItemQuantity));
+        priceTextView.setText("Price:" + ItemPrice);
+        quantityTextView.setText("Quantity: " + ItemQuantity);
 
         mSellButon.setOnClickListener(new View.OnClickListener() {
             @Override

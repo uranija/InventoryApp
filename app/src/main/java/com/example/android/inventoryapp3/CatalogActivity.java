@@ -16,21 +16,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.android.inventoryapp3.data.ItemContract;
 
 /**
- *Displays list of Items that were entered and stored in the app.
+ * Displays list of Items that were entered and stored in the app.
  */
 public class CatalogActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    /** Identifier for the Item data loader */
+    /**
+     * Identifier for the Item data loader
+     */
     private static final int Item_LOADER = 0;
 
-    /** Adapter for the ListView */
+    /**
+     * Adapter for the ListView
+     */
     ItemCursorAdapter mCursorAdapter;
 
     @Override
@@ -72,7 +75,7 @@ public class CatalogActivity extends AppCompatActivity implements
                 // {@link ItemEntry#CONTENT_URI}.
                 // For example, the URI would be "content://com.example.android.Items/Items/2"
                 // if the Item with ID 2 was clicked on.
-                Uri currentItemUri = ContentUris.withAppendedId(ItemContract.ItemEntry.CONTENT_URI,id);
+                Uri currentItemUri = ContentUris.withAppendedId(ItemContract.ItemEntry.CONTENT_URI, id);
 
                 // Set the URI on the data field of the intent
                 intent.setData(currentItemUri);
@@ -89,21 +92,27 @@ public class CatalogActivity extends AppCompatActivity implements
     /**
      * Helper method to insert hardcoded Item data into the database. For debugging purposes only.
      */
-    private void insertItem() {
+    private void insertInventoryData() {
         // Create a ContentValues object where column names are the keys,
         // and Toto's Item attributes are the values.
-        ContentValues values = new ContentValues();
-        values.put(ItemContract.ItemEntry.COLUMN_ITEM_NAME, "Toto");
-        values.put(ItemContract.ItemEntry.COLUMN_ITEM_PRICE , 20);
-        values.put(ItemContract.ItemEntry.COLUMN_ITEM_QUANTITY, 10);
-        values.put(ItemContract.ItemEntry.COLUMN_ITEM_BRAND, "track");
+        addToDatabase("Ice-Cube", "MAC", 42, 16);
+        addToDatabase("2Pac", "Celebrating", 50, 18);
 
-        // Insert a new row for Toto into the provider using the ContentResolver.
-        // Use the {@link ItemEntry#CONTENT_URI} to indicate that we want to insert
-        // into the Items database table.
-        // Receive the new content URI that will allow us to access Toto's data in the future.
+    }
+
+    // Insert a new row for Toto into the provider using the ContentResolver.
+    // Use the {@link ItemEntry#CONTENT_URI} to indicate that we want to insert
+    // into the Items database table.
+    // Receive the new content URI that will allow us to access Toto's data in the future.
+    private void addToDatabase(String name, String brand, int Quantity, int Price) {
+        ContentValues values = new ContentValues();
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_NAME, name);
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_BRAND, brand);
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_QUANTITY, Quantity);
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_PRICE, Price);
         Uri newUri = getContentResolver().insert(ItemContract.ItemEntry.CONTENT_URI, values);
     }
+
 
     /**
      * Helper method to delete all Items in the database.
@@ -127,7 +136,7 @@ public class CatalogActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
-                insertItem();
+                insertInventoryData();
                 return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:

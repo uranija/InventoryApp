@@ -13,14 +13,20 @@ import android.util.Log;
  */
 public class ItemProvider extends ContentProvider {
 
-    /** Tag for the log messages */
+    /**
+     * Tag for the log messages
+     */
     public static final String LOG_TAG = ItemProvider.class.getSimpleName();
 
-    /** URI matcher code for the content URI for the pets table */
-    private static final int PETS = 100;
+    /**
+     * URI matcher code for the content URI for the items table
+     */
+    private static final int ITEMS = 100;
 
-    /** URI matcher code for the content URI for a single pet in the pets table */
-    private static final int PET_ID = 101;
+    /**
+     * URI matcher code for the content URI for a single item in the items table
+     */
+    private static final int ITEM_ID = 101;
 
     /**
      * UriMatcher object to match a content URI to a corresponding code.
@@ -35,22 +41,24 @@ public class ItemProvider extends ContentProvider {
         // should recognize. All paths added to the UriMatcher have a corresponding code to return
         // when a match is found.
 
-        // The content URI of the form "content://com.example.android.pets/pets" will map to the
-        // integer code {@link #PETS}. This URI is used to provide access to MULTIPLE rows
-        // of the pets table.
-        sUriMatcher.addURI(ItemContract.CONTENT_AUTHORITY, ItemContract.PATH_ITEMS, PETS);
+        // The content URI of the form "content://com.example.android.items/items" will map to the
+        // integer code {@link #ITEMS}. This URI is used to provide access to MULTIPLE rows
+        // of the items table.
+        sUriMatcher.addURI(ItemContract.CONTENT_AUTHORITY, ItemContract.PATH_ITEMS, ITEMS);
 
-        // The content URI of the form "content://com.example.android.pets/pets/#" will map to the
-        // integer code {@link #PET_ID}. This URI is used to provide access to ONE single row
-        // of the pets table.
+        // The content URI of the form "content://com.example.android.items/items/#" will map to the
+        // integer code {@link #ITEM_ID}. This URI is used to provide access to ONE single row
+        // of the items table.
         //
         // In this case, the "#" wildcard is used where "#" can be substituted for an integer.
-        // For example, "content://com.example.android.pets/pets/3" matches, but
-        // "content://com.example.android.pets/pets" (without a number at the end) doesn't match.
-        sUriMatcher.addURI(ItemContract.CONTENT_AUTHORITY, ItemContract.PATH_ITEMS + "/#", PET_ID);
+        // For example, "content://com.example.android.items/items/3" matches, but
+        // "content://com.example.android.items/items" (without a number at the end) doesn't match.
+        sUriMatcher.addURI(ItemContract.CONTENT_AUTHORITY, ItemContract.PATH_ITEMS + "/#", ITEM_ID);
     }
 
-    /** Database helper object */
+    /**
+     * Database helper object
+     */
     private ItemDBHelper mDbHelper;
 
     @Override
@@ -71,16 +79,16 @@ public class ItemProvider extends ContentProvider {
         // Figure out if the URI matcher can match the URI to a specific code
         int match = sUriMatcher.match(uri);
         switch (match) {
-            case PETS:
-                // For the PETS code, query the pets table directly with the given
+            case ITEMS:
+                // For the ITEMS code, query the pets table directly with the given
                 // projection, selection, selection arguments, and sort order. The cursor
-                // could contain multiple rows of the pets table.
+                // could contain multiple rows of the items table.
                 cursor = database.query(ItemContract.ItemEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
-            case PET_ID:
-                // For the PET_ID code, extract out the ID from the URI.
-                // For an example URI such as "content://com.example.android.pets/pets/3",
+            case ITEM_ID:
+                // For the ITEM_ID code, extract out the ID from the URI.
+                // For an example URI such as "content://com.example.android.items/items/3",
                 // the selection will be "_id=?" and the selection argument will be a
                 // String array containing the actual ID of 3 in this case.
                 //
@@ -88,9 +96,9 @@ public class ItemProvider extends ContentProvider {
                 // arguments that will fill in the "?". Since we have 1 question mark in the
                 // selection, we have 1 String in the selection arguments' String array.
                 selection = ItemContract.ItemEntry._ID + "=?";
-                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
 
-                // This will perform a query on the pets table where the _id equals 3 to return a
+                // This will perform a query on the items table where the _id equals 3 to return a
                 // Cursor containing that row of the table.
                 cursor = database.query(ItemContract.ItemEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
@@ -112,18 +120,18 @@ public class ItemProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues contentValues) {
         final int match = sUriMatcher.match(uri);
         switch (match) {
-            case PETS:
-                return insertPet(uri, contentValues);
+            case ITEMS:
+                return insertItem(uri, contentValues);
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
     }
 
     /**
-     * Insert a pet into the database with the given content values. Return the new content URI
+     * Insert a item into the database with the given content values. Return the new content URI
      * for that specific row in the database.
      */
-    private Uri insertPet(Uri uri, ContentValues values) {
+    private Uri insertItem(Uri uri, ContentValues values) {
         // Check that the name is not null
         String name = values.getAsString(ItemContract.ItemEntry.COLUMN_ITEM_NAME);
         if (name == null) {
@@ -131,13 +139,13 @@ public class ItemProvider extends ContentProvider {
         }
 
 
-        // If the weight is provided, check that it's greater than or equal to 0 kg
+        // If the price is provided, check that it's greater than 0
         Integer price = values.getAsInteger(ItemContract.ItemEntry.COLUMN_ITEM_PRICE);
         if (price != null && price < 0) {
             throw new IllegalArgumentException("Item requires valid price");
 
         }
-        // If the weight is provided, check that it's greater than or equal to 0 kg
+        // If the quantity is provided, check that it's greater than or equal to 0
         Integer quantity = values.getAsInteger(ItemContract.ItemEntry.COLUMN_ITEM_QUANTITY);
         if (quantity != null && quantity < 0) {
             throw new IllegalArgumentException("Item requires valid quantity");
@@ -145,7 +153,7 @@ public class ItemProvider extends ContentProvider {
         }
 
 
-        // No need to check the breed, any value is valid (including null).
+        // No need to check the brand, any value is valid (including null).
 
         // Get writeable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
@@ -158,7 +166,7 @@ public class ItemProvider extends ContentProvider {
             return null;
         }
 
-        // Notify all listeners that the data has changed for the pet content URI
+        // Notify all listeners that the data has changed for the item content URI
         getContext().getContentResolver().notifyChange(uri, null);
 
         // Return the new URI with the ID (of the newly inserted row) appended at the end
@@ -170,48 +178,47 @@ public class ItemProvider extends ContentProvider {
                       String[] selectionArgs) {
         final int match = sUriMatcher.match(uri);
         switch (match) {
-            case PETS:
-                return updatePet(uri, contentValues, selection, selectionArgs);
-            case PET_ID:
-                // For the PET_ID code, extract out the ID from the URI,
+            case ITEMS:
+                return updateItem(uri, contentValues, selection, selectionArgs);
+            case ITEM_ID:
+                // For the ITEM_ID code, extract out the ID from the URI,
                 // so we know which row to update. Selection will be "_id=?" and selection
                 // arguments will be a String array containing the actual ID.
                 selection = ItemContract.ItemEntry._ID + "=?";
-                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
-                return updatePet(uri, contentValues, selection, selectionArgs);
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return updateItem(uri, contentValues, selection, selectionArgs);
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
     }
 
     /**
-     * Update pets in the database with the given content values. Apply the changes to the rows
-     * specified in the selection and selection arguments (which could be 0 or 1 or more pets).
+     * Update items in the database with the given content values. Apply the changes to the rows
+     * specified in the selection and selection arguments (which could be 0 or 1 or more items).
      * Return the number of rows that were successfully updated.
      */
-    private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        // If the {@link PetEntry#COLUMN_ITEM_NAME} key is present,
+    private int updateItem(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        // If the {@link ItemEntry#COLUMN_ITEM_NAME} key is present,
         // check that the name value is not null.
         if (values.containsKey(ItemContract.ItemEntry.COLUMN_ITEM_NAME)) {
-            String name = values.getAsString(ItemContract.ItemEntry.COLUMN_ITEM_BRAND);
+            String name = values.getAsString(ItemContract.ItemEntry.COLUMN_ITEM_NAME);
             if (name == null) {
-                throw new IllegalArgumentException("Pet requires a name");
+                throw new IllegalArgumentException("Item requires a name");
             }
         }
 
 
-
-        // If the {@link PetEntry#COLUMN_PET_PRICE} key is present,
-        // check that the weight value is valid.
+        // If the {@link ItemEntry#COLUMN_ITEM_PRICE} key is present,
+        // check that the price value is valid.
         if (values.containsKey(ItemContract.ItemEntry.COLUMN_ITEM_PRICE)) {
             // Check that the weight is greater than or equal to 0 kg
             Integer price = values.getAsInteger(ItemContract.ItemEntry.COLUMN_ITEM_PRICE);
             if (price != null && price < 0) {
-                throw new IllegalArgumentException("Pet requires valid weight");
+                throw new IllegalArgumentException("Item requires valid price");
             }
         }
 
-        // No need to check the breed, any value is valid (including null).
+        // No need to check the brand, any value is valid (including null).
 
         // If there are no values to update, then don't try to update the database
         if (values.size() == 0) {
@@ -244,14 +251,14 @@ public class ItemProvider extends ContentProvider {
 
         final int match = sUriMatcher.match(uri);
         switch (match) {
-            case PETS:
+            case ITEMS:
                 // Delete all rows that match the selection and selection args
                 rowsDeleted = database.delete(ItemContract.ItemEntry.TABLE_NAME, selection, selectionArgs);
                 break;
-            case PET_ID:
+            case ITEM_ID:
                 // Delete a single row given by the ID in the URI
                 selection = ItemContract.ItemEntry._ID + "=?";
-                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 rowsDeleted = database.delete(ItemContract.ItemEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
@@ -272,9 +279,9 @@ public class ItemProvider extends ContentProvider {
     public String getType(Uri uri) {
         final int match = sUriMatcher.match(uri);
         switch (match) {
-            case PETS:
+            case ITEMS:
                 return ItemContract.ItemEntry.CONTENT_LIST_TYPE;
-            case PET_ID:
+            case ITEM_ID:
                 return ItemContract.ItemEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalStateException("Unknown URI " + uri + " with match " + match);

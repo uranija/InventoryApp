@@ -54,12 +54,12 @@ public class EditorActivity extends AppCompatActivity implements
     private EditText mNameEditText;
 
     /**
-     * EditText field to enter the Item's breed
+     * EditText field to enter the Item's brand
      */
     private EditText mBrandEditText;
 
     /**
-     * EditText field to enter the Item's weight
+     * EditText field to enter the Item's price
      */
     private EditText mPriceEditText;
 
@@ -196,11 +196,9 @@ public class EditorActivity extends AppCompatActivity implements
         mQuantityEditText.setText("1");
     }
 
+
     /**
-     * Setup the dropdown spinner that allows the user to select the gender of the pet.
-     */
-    /**
-     * Get user input from editor and save pet into database.
+     * Get user input from editor and save item into database.
      */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
@@ -209,16 +207,10 @@ public class EditorActivity extends AppCompatActivity implements
         }
     }
 
-
-
-
-
-
-
     /**
      * Get user input from editor and save Item into database.
      */
-    private void saveItem() {
+    private boolean saveItem() {
         // Read from input fields
         // Use trim to eliminate leading or trailing white space
         // Read from input fields
@@ -236,6 +228,11 @@ public class EditorActivity extends AppCompatActivity implements
         String priceString = mPriceEditText.getText().toString().trim();
         String quantityString = mQuantityEditText.getText().toString().trim();
 
+        if (nameString.equals("") || brandString.equals("") || priceString.equals("")|| imageByte.equals("")) {
+            Toast.makeText(this, "Please fill in all of the fields", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         // Check if this is supposed to be a new Item
         // and check if all the fields in the editor are blank
         if (mCurrentItemUri == null &&
@@ -243,7 +240,7 @@ public class EditorActivity extends AppCompatActivity implements
                 TextUtils.isEmpty(priceString) && TextUtils.isEmpty(quantityString)) {
             // Since no fields were modified, we can return early without creating a new Item.
             // No need to create ContentValues and no need to do any ContentProvider operations.
-            return;
+            return true;
         }
 
         // Create a ContentValues object where column names are the keys,
@@ -255,18 +252,25 @@ public class EditorActivity extends AppCompatActivity implements
         values.put(ItemEntry.COLUMN_ITEM_PRICE, priceString);
         values.put(ItemEntry.COLUMN_ITEM_QUANTITY, quantityString);
 
-        // If the weight is provided, check that it's greater than or equal to 0 kg
+        // If the price is provided, check that it's greater than or equal to 0
         Integer price = values.getAsInteger(ItemEntry.COLUMN_ITEM_PRICE);
         if (price != null && price < 0) {
             throw new IllegalArgumentException("Item requires valid price");
 
         }
-        // If the weight is provided, check that it's greater than or equal to 0 kg
+        // If the quantity is provided, check that it's greater than or equal to 0
         Integer quantity = values.getAsInteger(ItemEntry.COLUMN_ITEM_QUANTITY);
         if (quantity != null && quantity < 0) {
             throw new IllegalArgumentException("Item requires valid quantity");
-
         }
+
+        if (imageByte != null) {
+            values.put(ItemEntry.COLUMN_ITEM_IMAGE, imageByte);
+        } else {
+            Toast.makeText(this,"Item requires an image", Toast.LENGTH_SHORT).show();
+        }
+
+
 
 
         // Determine if this is a new or existing Item by checking if mCurrentItemUri is null or not
@@ -280,10 +284,12 @@ public class EditorActivity extends AppCompatActivity implements
                 // If the new content URI is null, then there was an error with insertion.
                 Toast.makeText(this, getString(R.string.editor_insert_Item_failed),
                         Toast.LENGTH_SHORT).show();
+                return false;
             } else {
                 // Otherwise, the insertion was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_insert_Item_successful),
                         Toast.LENGTH_SHORT).show();
+                return true;
             }
         } else {
             // Otherwise this is an EXISTING Item, so update the Item with content URI: mCurrentItemUri
@@ -297,10 +303,12 @@ public class EditorActivity extends AppCompatActivity implements
                 // If no rows were affected, then there was an error with the update.
                 Toast.makeText(this, getString(R.string.editor_update_Item_failed),
                         Toast.LENGTH_SHORT).show();
+                return false;
             } else {
                 // Otherwise, the update was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_update_Item_successful),
                         Toast.LENGTH_SHORT).show();
+                return true;
             }
         }
     }
@@ -335,9 +343,11 @@ public class EditorActivity extends AppCompatActivity implements
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 // Save Item to database
-                saveItem();
-                // Exit activity
-                finish();
+                if (saveItem()) {
+                    // Exit activity
+                    finish();
+                }
+
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:

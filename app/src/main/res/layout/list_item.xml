@@ -17,6 +17,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="@dimen/activity_margin"
+    android:descendantFocusability="blocksDescendants"
     android:weightSum="1">
 
     <ImageView
@@ -48,12 +49,20 @@
     <TextView
         android:id="@+id/price"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:text="Price $10.00"
+        />
 
     <TextView
         android:id="@+id/quantity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Quantity: 3"
+
+        />
 
     <Button
         android:id="@+id/buttonSell"

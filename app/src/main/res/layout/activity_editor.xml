@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Layout for the editor -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!-- Layout for the editor -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,7 +15,7 @@
         android:adjustViewBounds="true"
         android:padding="16dp"
         android:scaleType="center"
-        android:src="@drawable/seconds"/>
+        android:src="@drawable/yesterday" />
 
     <!-- Overview category -->
     <LinearLayout
@@ -27,30 +25,30 @@
 
         <!-- Label -->
         <TextView
-            android:text="@string/category_overview"
-            style="@style/CategoryStyle" />
+            style="@style/CategoryStyle"
+            android:text="@string/category_overview" />
 
         <!-- Input fields -->
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:paddingLeft="4dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="4dp">
 
             <!-- Name field -->
             <EditText
                 android:id="@+id/edit_item_name"
+                style="@style/EditorFieldStyle"
                 android:hint="@string/hint_Item_name"
-                android:inputType="textCapWords"
-                style="@style/EditorFieldStyle" />
+                android:inputType="textCapWords" />
 
-            <!-- Breed field -->
+            <!-- Brand field -->
             <EditText
                 android:id="@+id/edit_item_brand"
+                style="@style/EditorFieldStyle"
                 android:hint="@string/hint_Item_brand"
-                android:inputType="textCapWords"
-                style="@style/EditorFieldStyle" />
+                android:inputType="textCapWords" />
         </LinearLayout>
     </LinearLayout>
 
@@ -65,31 +63,28 @@
 
         <!-- Label -->
         <TextView
-            android:text="@string/category_price"
-            style="@style/CategoryStyle" />
+            style="@style/CategoryStyle"
+            android:text="@string/category_price" />
 
         <!-- Input fields -->
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
             android:paddingLeft="4dp">
 
             <!-- price field -->
             <EditText
                 android:id="@+id/edit_item_price"
+                style="@style/EditorFieldStyle"
                 android:hint="@string/hint_Item_price"
-                android:inputType="number"
-                style="@style/EditorFieldStyle" />
+                android:inputType="number" />
 
             <!-- Units for price (eur) -->
             <TextView
                 android:id="@+id/label_price_units"
-                android:text="@string/unit_Item_price"
-                style="@style/EditorUnitsStyle"/>
-
-
-
+                style="@style/EditorUnitsStyle"
+                android:text="@string/unit_Item_price" />
 
 
         </LinearLayout>
@@ -103,16 +98,15 @@
         android:orientation="horizontal">
 
 
-
         <!-- Label -->
         <TextView
-            android:text="@string/category_quantity"
-            style="@style/CategoryStyle" />
+            style="@style/CategoryStyle"
+            android:text="@string/category_quantity" />
 
         <!-- Input fields -->
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
             android:paddingLeft="4dp">
 
@@ -128,7 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"/>
+                android:paddingRight="16dp" />
 
             <Button
                 android:id="@+id/plus_button"
