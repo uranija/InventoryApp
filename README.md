@@ -9,3 +9,9 @@ Presenting information from files and SQLite databases to users
 Updating information based on user input.
 Creating intents to other apps using stored information.
 
+
+![inventory](https://user-images.githubusercontent.com/26045797/56085280-30735880-5e49-11e9-8b0c-863a2d3faefd.png)
+![inventory2](https://user-images.githubusercontent.com/26045797/56085281-30735880-5e49-11e9-981b-d47bf561a259.png)
+![inventory3](https://user-images.githubusercontent.com/26045797/56085282-30735880-5e49-11e9-8112-7043cd730bad.png)
+![inventory4](https://user-images.githubusercontent.com/26045797/56085283-30735880-5e49-11e9-8139-fcc2a4d52ad2.png)
+![inventory5](https://user-images.githubusercontent.com/26045797/56085284-30735880-5e49-11e9-92c8-3bc0cf9da2ff.png)
